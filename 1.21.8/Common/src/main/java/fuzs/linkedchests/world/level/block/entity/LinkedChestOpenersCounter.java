@@ -1,6 +1,6 @@
 package fuzs.linkedchests.world.level.block.entity;
 
-import fuzs.linkedchests.network.UpdateLidControllerMessage;
+import fuzs.linkedchests.network.ClientboundUpdateLidControllerMessage;
 import fuzs.puzzleslib.api.container.v1.ListBackedContainer;
 import fuzs.puzzleslib.api.network.v4.MessageSender;
 import fuzs.puzzleslib.api.network.v4.PlayerSet;
@@ -34,7 +34,7 @@ public class LinkedChestOpenersCounter {
     protected void openerCountChanged(DyeChannel dyeChannel, MinecraftServer server, int openCount) {
         // vanilla uses a block event to synchronize the changed openers count, we need to send this to all connected clients though,
         // not just whoever is tracking a certain block
-        MessageSender.broadcast(PlayerSet.ofAll(server), new UpdateLidControllerMessage(dyeChannel, openCount > 0));
+        MessageSender.broadcast(PlayerSet.ofAll(server), new ClientboundUpdateLidControllerMessage(dyeChannel, openCount > 0));
     }
 
     protected boolean isOwnContainer(Player player) {
