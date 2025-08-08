@@ -2,7 +2,7 @@ package fuzs.linkedchests;
 
 import fuzs.linkedchests.config.ServerConfig;
 import fuzs.linkedchests.init.ModRegistry;
-import fuzs.linkedchests.network.UpdateLidControllerMessage;
+import fuzs.linkedchests.network.ClientboundUpdateLidControllerMessage;
 import fuzs.linkedchests.world.level.block.entity.DyeChannelManager;
 import fuzs.puzzleslib.api.config.v3.ConfigHolder;
 import fuzs.puzzleslib.api.core.v1.ModConstructor;
@@ -39,7 +39,8 @@ public class LinkedChests implements ModConstructor {
 
     @Override
     public void onRegisterPayloadTypes(PayloadTypesContext context) {
-        context.playToClient(UpdateLidControllerMessage.class, UpdateLidControllerMessage.STREAM_CODEC);
+        context.playToClient(ClientboundUpdateLidControllerMessage.class,
+                ClientboundUpdateLidControllerMessage.STREAM_CODEC);
     }
 
     public static ResourceLocation id(String path) {

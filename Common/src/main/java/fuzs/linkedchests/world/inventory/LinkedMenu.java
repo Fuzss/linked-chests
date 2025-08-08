@@ -23,7 +23,9 @@ public class LinkedMenu extends ChestMenu {
                 inventory,
                 container,
                 container.getContainerSize() / 9);
-        if (isOpenedFromPouch) ContainerMenuHelper.setSelectedSlotLocked(this);
+        if (isOpenedFromPouch) {
+            ContainerMenuHelper.setSelectedSlotLocked(this);
+        }
     }
 
     public record LinkedData(boolean isPersonalChannel, boolean isOpenedFromPouch) {
