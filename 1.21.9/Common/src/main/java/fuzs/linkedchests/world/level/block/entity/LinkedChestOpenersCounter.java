@@ -34,13 +34,14 @@ public class LinkedChestOpenersCounter {
     protected void openerCountChanged(DyeChannel dyeChannel, MinecraftServer server, int openCount) {
         // vanilla uses a block event to synchronize the changed openers count, we need to send this to all connected clients though,
         // not just whoever is tracking a certain block
-        MessageSender.broadcast(PlayerSet.ofAll(server), new ClientboundUpdateLidControllerMessage(dyeChannel, openCount > 0));
+        MessageSender.broadcast(PlayerSet.ofAll(server),
+                new ClientboundUpdateLidControllerMessage(dyeChannel, openCount > 0));
     }
 
     protected boolean isOwnContainer(Player player) {
-        return player.containerMenu instanceof ChestMenu chestMenu &&
-                chestMenu.getContainer() instanceof ListBackedContainer container &&
-                this.containerChecker.test(container.getContainerItems());
+        return player.containerMenu instanceof ChestMenu chestMenu
+                && chestMenu.getContainer() instanceof ListBackedContainer container && this.containerChecker.test(
+                container.getContainerItems());
     }
 
     public void incrementOpeners(DyeChannel dyeChannel, ServerPlayer serverPlayer) {
@@ -48,8 +49,8 @@ public class LinkedChestOpenersCounter {
     }
 
     public void incrementOpeners(DyeChannel dyeChannel, ServerPlayer serverPlayer, BlockPos pos, SoundSource soundSource) {
+        ServerLevel serverLevel = serverPlayer.level();
         if (this.openCount++ == 0) {
-            ServerLevel serverLevel = serverPlayer.level();
             serverLevel.playSound(null,
                     pos.getX() + 0.5,
                     pos.getY() + 0.5,
@@ -62,28 +63,28 @@ public class LinkedChestOpenersCounter {
             this.scheduleRecheck = true;
         }
 
-        this.openerCountChanged(dyeChannel, serverPlayer.getServer(), this.openCount);
+        this.openerCountChanged(dyeChannel, serverLevel.getServer(), this.openCount);
     }
 
     public void decrementOpeners(DyeChannel dyeChannel, ServerPlayer serverPlayer) {
         this.decrementOpeners(dyeChannel, serverPlayer, serverPlayer.blockPosition(), serverPlayer.getSoundSource());
     }
 
-    public void decrementOpeners(DyeChannel dyeChannel, ServerPlayer serverPlayer, BlockPos pos, SoundSource soundSource) {
+    public void decrementOpeners(DyeChannel dyeChannel, ServerPlayer serverPlayer, BlockPos blockPos, SoundSource soundSource) {
+        ServerLevel serverLevel = serverPlayer.level();
         if (--this.openCount == 0) {
-            ServerLevel serverLevel = serverPlayer.level();
             serverLevel.playSound(null,
-                    pos.getX() + 0.5,
-                    pos.getY() + 0.5,
-                    pos.getZ() + 0.5,
+                    blockPos.getX() + 0.5,
+                    blockPos.getY() + 0.5,
+                    blockPos.getZ() + 0.5,
                     SoundEvents.ENDER_CHEST_CLOSE,
                     soundSource,
                     0.5F,
                     serverLevel.random.nextFloat() * 0.1F + 0.9F);
-            serverLevel.gameEvent(serverPlayer, GameEvent.CONTAINER_CLOSE, pos);
+            serverLevel.gameEvent(serverPlayer, GameEvent.CONTAINER_CLOSE, blockPos);
         }
 
-        this.openerCountChanged(dyeChannel, serverPlayer.getServer(), this.openCount);
+        this.openerCountChanged(dyeChannel, serverLevel.getServer(), this.openCount);
     }
 
     public void recheckOpeners(DyeChannel dyeChannel, MinecraftServer server) {

@@ -20,12 +20,14 @@ import java.util.UUID;
 
 public record DyeChannel(DyeColor leftColor, DyeColor middleColor, DyeColor rightColor, Optional<UUID> uuid) {
     public static final DyeChannel DEFAULT = new DyeChannel(DyeColor.WHITE);
-    public static final Codec<DyeChannel> CODEC = RecordCodecBuilder.create(instance -> instance.group(DyeColor.CODEC.listOf()
-                    .validate(list -> Util.fixedSize(list, 3))
-                    .fieldOf("colors")
-                    .forGetter(dyeChannel -> {
-                        return List.of(dyeChannel.leftColor, dyeChannel.middleColor, dyeChannel.rightColor);
-                    }), UUIDUtil.CODEC.optionalFieldOf("uuid").forGetter(DyeChannel::uuid))
+    public static final Codec<DyeChannel> CODEC = RecordCodecBuilder.create((RecordCodecBuilder.Instance<DyeChannel> instance) -> instance.group(
+                    DyeColor.CODEC.listOf()
+                            .validate((List<DyeColor> list) -> Util.fixedSize(list, 3))
+                            .fieldOf("colors")
+                            .forGetter((DyeChannel dyeChannel) -> {
+                                return List.of(dyeChannel.leftColor, dyeChannel.middleColor, dyeChannel.rightColor);
+                            }),
+                    UUIDUtil.CODEC.optionalFieldOf("uuid").forGetter(DyeChannel::uuid))
             .apply(instance, (List<DyeColor> colors, Optional<UUID> uuid) -> {
                 return new DyeChannel(colors.get(0), colors.get(1), colors.get(2), uuid);
             }));

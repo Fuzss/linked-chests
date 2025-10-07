@@ -1,4 +1,4 @@
-package fuzs.linkedchests.data;
+package fuzs.linkedchests.data.loot;
 
 import fuzs.linkedchests.init.ModRegistry;
 import fuzs.puzzleslib.api.data.v2.AbstractLootProvider;
@@ -8,6 +8,7 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 public class ModBlockLootProvider extends AbstractLootProvider.Blocks {
@@ -27,7 +28,7 @@ public class ModBlockLootProvider extends AbstractLootProvider.Blocks {
                         LootPool.lootPool()
                                 .setRolls(ConstantValue.exactly(1.0F))
                                 .add(LootItem.lootTableItem(block)
-                                        .apply(CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)
+                                        .apply(CopyComponentsFunction.copyComponentsFromBlockEntity(LootContextParams.BLOCK_ENTITY)
                                                 .include(ModRegistry.DYE_CHANNEL_DATA_COMPONENT_TYPE.value())))));
     }
 }

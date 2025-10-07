@@ -18,6 +18,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -120,8 +121,8 @@ public class LinkedChestBlockEntity extends BlockEntity implements ListBackedCon
     }
 
     @Override
-    public void startOpen(Player player) {
-        if (!this.remove && player instanceof ServerPlayer serverPlayer && !player.isSpectator()) {
+    public void startOpen(ContainerUser containerUser) {
+        if (!this.remove && containerUser instanceof ServerPlayer serverPlayer && !serverPlayer.isSpectator()) {
             this.getStorage()
                     .openersCounter()
                     .incrementOpeners(this.dyeChannel, serverPlayer, this.getBlockPos(), SoundSource.BLOCKS);
@@ -129,8 +130,8 @@ public class LinkedChestBlockEntity extends BlockEntity implements ListBackedCon
     }
 
     @Override
-    public void stopOpen(Player player) {
-        if (!this.remove && player instanceof ServerPlayer serverPlayer && !player.isSpectator()) {
+    public void stopOpen(ContainerUser containerUser) {
+        if (!this.remove && containerUser instanceof ServerPlayer serverPlayer && !serverPlayer.isSpectator()) {
             this.getStorage()
                     .openersCounter()
                     .decrementOpeners(this.dyeChannel, serverPlayer, this.getBlockPos(), SoundSource.BLOCKS);
@@ -139,7 +140,7 @@ public class LinkedChestBlockEntity extends BlockEntity implements ListBackedCon
 
     @Override
     public float getOpenNess(float partialTicks) {
-        if (this.hasLevel() && this.getLevel().isClientSide) {
+        if (this.hasLevel() && this.getLevel().isClientSide()) {
             return DyeChannelLidController.getChestLidController(this.dyeChannel).getOpenness(partialTicks);
         } else {
             return 0.0F;

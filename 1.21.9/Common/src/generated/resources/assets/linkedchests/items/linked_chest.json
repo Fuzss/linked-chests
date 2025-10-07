@@ -8,7 +8,8 @@
           "base": "linkedchests:item/linked_chest",
           "model": {
             "type": "linkedchests:linked_chest",
-            "texture": "minecraft:christmas"
+            "buttons_texture": "linkedchests:linked_buttons",
+            "chest_texture": "minecraft:christmas"
           }
         },
         "when": [
@@ -23,7 +24,8 @@
       "base": "linkedchests:item/linked_chest",
       "model": {
         "type": "linkedchests:linked_chest",
-        "texture": "linkedchests:linked"
+        "buttons_texture": "linkedchests:linked_buttons",
+        "chest_texture": "linkedchests:linked"
       }
     },
     "pattern": "MM-dd",

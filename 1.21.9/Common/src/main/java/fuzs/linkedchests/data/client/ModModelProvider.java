@@ -1,7 +1,7 @@
 package fuzs.linkedchests.data.client;
 
 import fuzs.linkedchests.client.color.item.DyeChannelTintSource;
-import fuzs.linkedchests.client.renderer.blockentity.LinkedChestRendererImpl;
+import fuzs.linkedchests.client.renderer.blockentity.LinkedChestBlockEntityRenderer;
 import fuzs.linkedchests.client.renderer.item.properties.conditional.LinkedPouchOpenModelProperty;
 import fuzs.linkedchests.client.renderer.item.properties.conditional.LinkedPouchPersonalModelProperty;
 import fuzs.linkedchests.client.renderer.special.LinkedChestSpecialRenderer;
@@ -38,9 +38,12 @@ public class ModModelProvider extends AbstractModelProvider {
     public void addBlockModels(BlockModelGenerators blockModelGenerators) {
         this.createChest(ModRegistry.LINKED_CHEST_BLOCK.value(),
                 Blocks.END_STONE,
-                LinkedChestRendererImpl.LINKED_CHEST_TEXTURE,
+                LinkedChestBlockEntityRenderer.LINKED_CHEST_TEXTURE,
                 true,
-                LinkedChestSpecialRenderer.Unbaked::new,
+                (ResourceLocation resourceLocation) -> {
+                    return new LinkedChestSpecialRenderer.Unbaked(resourceLocation,
+                            LinkedChestBlockEntityRenderer.LINKED_CHEST_BUTTONS_TEXTURE);
+                },
                 blockModelGenerators);
     }
 

@@ -1,13 +1,12 @@
 package fuzs.linkedchests.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import fuzs.linkedchests.LinkedChests;
 import fuzs.linkedchests.client.color.item.DyeChannelTintSource;
 import fuzs.linkedchests.client.handler.DyeChannelLidController;
 import fuzs.linkedchests.client.model.LinkedChestModel;
+import fuzs.linkedchests.client.model.geom.ModModelLayers;
 import fuzs.linkedchests.client.renderer.blockentity.LinkedChestBlockEntityRenderer;
-import fuzs.linkedchests.client.renderer.blockentity.LinkedChestRendererImpl;
 import fuzs.linkedchests.client.renderer.item.properties.conditional.LinkedPouchOpenModelProperty;
 import fuzs.linkedchests.client.renderer.item.properties.conditional.LinkedPouchPersonalModelProperty;
 import fuzs.linkedchests.client.renderer.special.LinkedChestSpecialRenderer;
@@ -22,20 +21,19 @@ import fuzs.puzzleslib.api.client.core.v1.context.LayerDefinitionsContext;
 import fuzs.puzzleslib.api.client.core.v1.context.MenuScreensContext;
 import fuzs.puzzleslib.api.client.event.v1.ClientTickEvents;
 import fuzs.puzzleslib.api.client.event.v1.entity.player.ClientPlayerNetworkEvents;
-import fuzs.puzzleslib.api.client.event.v1.renderer.RenderHighlightCallback;
+import fuzs.puzzleslib.api.client.event.v1.renderer.SubmitBlockOutlineCallback;
 import fuzs.puzzleslib.api.client.gui.v2.tooltip.ItemTooltipRegistry;
-import fuzs.puzzleslib.api.event.v1.core.EventResult;
+import fuzs.puzzleslib.api.event.v1.core.EventResultHolder;
 import net.minecraft.client.Camera;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.*;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.ARGB;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.state.BlockOutlineRenderState;
+import net.minecraft.client.renderer.state.LevelRenderState;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class LinkedChestsClient implements ClientModConstructor {
@@ -48,32 +46,31 @@ public class LinkedChestsClient implements ClientModConstructor {
     private static void registerEventHandlers() {
         ClientTickEvents.END.register(DyeChannelLidController::onEndClientTick);
         ClientPlayerNetworkEvents.LOGGED_IN.register(DyeChannelLidController::onLoggedIn);
-        RenderHighlightCallback.EVENT.register((LevelRenderer levelRenderer, Camera camera, GameRenderer gameRenderer, HitResult hitResult, DeltaTracker deltaTracker, PoseStack poseStack, MultiBufferSource multiBufferSource, ClientLevel level) -> {
-            if (hitResult.getType() == HitResult.Type.BLOCK) {
-                BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
-                BlockState blockState = level.getBlockState(blockPos);
-                if (!blockState.isAir() && level.getWorldBorder().isWithinBounds(blockPos)
-                        && blockState.getBlock() instanceof HighlightShapeProvider block) {
+        SubmitBlockOutlineCallback.EVENT.register((LevelRenderer levelRenderer, ClientLevel clientLevel, BlockState blockState, BlockHitResult hitResult, CollisionContext collisionContext, Camera camera) -> {
+            if (blockState.getBlock() instanceof HighlightShapeProvider block && clientLevel.getWorldBorder()
+                    .isWithinBounds(hitResult.getBlockPos())) {
+                return EventResultHolder.allow((BlockOutlineRenderState renderState, MultiBufferSource.BufferSource bufferSource, PoseStack poseStack, boolean isTranslucent, LevelRenderState levelRenderState) -> {
                     VoxelShape voxelShape = block.getHighlightShape(blockState,
-                            level,
-                            blockPos,
+                            clientLevel,
+                            hitResult.getBlockPos(),
                             hitResult.getLocation());
-                    VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.lines());
-                    Vec3 cameraPosition = camera.getPosition();
-                    double posX = blockPos.getX() - cameraPosition.x();
-                    double posY = blockPos.getY() - cameraPosition.y();
-                    double posZ = blockPos.getZ() - cameraPosition.z();
-                    ShapeRenderer.renderShape(poseStack,
-                            vertexConsumer,
+                    renderState = new BlockOutlineRenderState(renderState.pos(),
+                            renderState.isTranslucent(),
+                            renderState.highContrast(),
                             voxelShape,
-                            posX,
-                            posY,
-                            posZ,
-                            ARGB.color(102, 0));
-                    return EventResult.INTERRUPT;
-                }
+                            renderState.collisionShape(),
+                            renderState.occlusionShape(),
+                            renderState.interactionShape());
+                    SubmitBlockOutlineCallback.CustomBlockOutlineRenderer.renderVanillaBlockOutline(renderState,
+                            bufferSource,
+                            poseStack,
+                            isTranslucent,
+                            levelRenderState);
+                    return true;
+                });
             }
-            return EventResult.PASS;
+
+            return EventResultHolder.pass();
         });
     }
 
@@ -102,8 +99,16 @@ public class LinkedChestsClient implements ClientModConstructor {
 
     @Override
     public void onRegisterLayerDefinitions(LayerDefinitionsContext context) {
-        context.registerLayerDefinition(LinkedChestRendererImpl.LINKED_CHEST_MODEL_LAYER_LOCATION,
+        context.registerLayerDefinition(ModModelLayers.LINKED_CHEST_MODEL_LAYERS.chest(),
                 LinkedChestModel::createSingleBodyLayer);
+        context.registerLayerDefinition(ModModelLayers.LINKED_CHEST_MODEL_LAYERS.lock(),
+                LinkedChestModel::createLockLayer);
+        context.registerLayerDefinition(ModModelLayers.LINKED_CHEST_MODEL_LAYERS.leftButton(),
+                LinkedChestModel::createLeftButtonLayer);
+        context.registerLayerDefinition(ModModelLayers.LINKED_CHEST_MODEL_LAYERS.middleButton(),
+                LinkedChestModel::createMiddleButtonLayer);
+        context.registerLayerDefinition(ModModelLayers.LINKED_CHEST_MODEL_LAYERS.rightButton(),
+                LinkedChestModel::createRightButtonLayer);
     }
 
     @Override

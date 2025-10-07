@@ -71,19 +71,19 @@ public class LinkedChestBlock extends EnderChestBlock implements HighlightShapeP
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return SHAPES.get(state.getValue(FACING));
+    public VoxelShape getShape(BlockState blockState, BlockGetter level, BlockPos blockPos, CollisionContext context) {
+        return SHAPES.get(blockState.getValue(FACING));
     }
 
     @Override
-    protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    protected VoxelShape getCollisionShape(BlockState blockState, BlockGetter level, BlockPos blockPos, CollisionContext context) {
         return SHAPE;
     }
 
     @Override
-    public VoxelShape getHighlightShape(BlockState state, BlockGetter level, BlockPos pos, Vec3 hitVector) {
-        Direction direction = state.getValue(FACING);
-        hitVector = hitVector.subtract(pos.getX(), pos.getY(), pos.getZ());
+    public VoxelShape getHighlightShape(BlockState blockState, BlockGetter level, BlockPos blockPos, Vec3 hitVector) {
+        Direction direction = blockState.getValue(FACING);
+        hitVector = hitVector.subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ());
         List<Map<Direction, VoxelShape>> shapes = List.of(LEFT_BUTTON_SHAPES,
                 MIDDLE_BUTTON_SHAPES,
                 RIGHT_BUTTON_SHAPES,
@@ -104,16 +104,16 @@ public class LinkedChestBlock extends EnderChestBlock implements HighlightShapeP
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+    protected InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult hitResult) {
         return InteractionResult.PASS;
     }
 
     @Override
-    protected InteractionResult useItemOn(ItemStack itemInHand, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (level.getBlockEntity(pos) instanceof LinkedChestBlockEntity blockEntity) {
+    protected InteractionResult useItemOn(ItemStack itemInHand, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult hitResult) {
+        if (level.getBlockEntity(blockPos) instanceof LinkedChestBlockEntity blockEntity) {
             DyeChannel dyeChannel = blockEntity.getDyeChannel();
-            Direction direction = state.getValue(FACING);
-            Vec3 hitVector = hitResult.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
+            Direction direction = blockState.getValue(FACING);
+            Vec3 hitVector = hitResult.getLocation().subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ());
             if (itemInHand.is(ModRegistry.DYE_CHANNEL_COLOR_PROVIDERS_ITEM_TAG)) {
                 DyeColor dyeColor = DyeChannel.getDyeColor(itemInHand.getItem());
                 DyeChannel newDyeChannel = dyeChannel;
@@ -125,26 +125,27 @@ public class LinkedChestBlock extends EnderChestBlock implements HighlightShapeP
                     newDyeChannel = dyeChannel.withRightColor(dyeColor);
                 }
                 if (dyeChannel != newDyeChannel) {
-                    if (!level.isClientSide) {
+                    if (!level.isClientSide()) {
                         blockEntity.setDyeChannel(newDyeChannel);
                         level.playSound(null,
-                                pos,
+                                blockPos,
                                 SoundEvents.CHISELED_BOOKSHELF_INSERT,
                                 SoundSource.BLOCKS,
                                 1.0F,
                                 1.0F);
                         itemInHand.consume(1, player);
-                        level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
+                        level.gameEvent(player, GameEvent.BLOCK_CHANGE, blockPos);
                     }
-                    return InteractionResultHelper.sidedSuccess(level.isClientSide);
+
+                    return InteractionResultHelper.sidedSuccess(level.isClientSide());
                 }
             } else if (LATCH_SHAPES.get(direction).bounds().inflate(0.001).contains(hitVector)) {
                 if (dyeChannel.uuid().isPresent()) {
                     if (itemInHand.isEmpty() && player.isShiftKeyDown()) {
-                        if (!level.isClientSide) {
+                        if (!level.isClientSide()) {
                             blockEntity.setDyeChannel(dyeChannel.withUUID(null));
                             level.playSound(null,
-                                    pos,
+                                    blockPos,
                                     SoundEvents.ITEM_FRAME_REMOVE_ITEM,
                                     SoundSource.BLOCKS,
                                     1.0F,
@@ -154,49 +155,57 @@ public class LinkedChestBlock extends EnderChestBlock implements HighlightShapeP
                                 player.drop(itemStack, false);
                             }
 
-                            level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
+                            level.gameEvent(player, GameEvent.BLOCK_CHANGE, blockPos);
                         }
-                        return InteractionResultHelper.sidedSuccess(level.isClientSide);
+
+                        return InteractionResultHelper.sidedSuccess(level.isClientSide());
                     }
                 } else if (itemInHand.is(ModRegistry.PERSONAL_CHANNEL_PROVIDERS_ITEM_TAG)) {
-                    if (!level.isClientSide) {
+                    if (!level.isClientSide()) {
                         blockEntity.setDyeChannel(dyeChannel.withUUID(player.getUUID()));
-                        level.playSound(null, pos, SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        level.playSound(null,
+                                blockPos,
+                                SoundEvents.ITEM_FRAME_ADD_ITEM,
+                                SoundSource.BLOCKS,
+                                1.0F,
+                                1.0F);
                         // we must store the used item to return it when removed as the tag can allow anything, so we would not know what was used initially
                         blockEntity.setLatchItem(itemInHand.copyWithCount(1));
                         itemInHand.consume(1, player);
-                        level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
+                        level.gameEvent(player, GameEvent.BLOCK_CHANGE, blockPos);
                     }
-                    return InteractionResultHelper.sidedSuccess(level.isClientSide);
+
+                    return InteractionResultHelper.sidedSuccess(level.isClientSide());
                 }
             }
 
-            if (level instanceof ServerLevel serverLevel &&
-                    !level.getBlockState(pos.above()).isRedstoneConductor(level, pos.above())) {
+            if (level instanceof ServerLevel serverLevel && !level.getBlockState(blockPos.above())
+                    .isRedstoneConductor(level, blockPos.above())) {
                 player.openMenu(blockEntity);
                 PiglinAi.angerNearbyPiglins(serverLevel, player, true);
             }
         }
 
-        return InteractionResultHelper.sidedSuccess(level.isClientSide);
+        return InteractionResultHelper.sidedSuccess(level.isClientSide());
     }
 
     @Override
-    protected ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState blockState, boolean includeData) {
-        ItemStack itemStack = super.getCloneItemStack(level, pos, blockState, includeData);
-        if (level.getBlockEntity(pos) instanceof LinkedChestBlockEntity blockEntity) {
+    protected ItemStack getCloneItemStack(LevelReader level, BlockPos blockPos, BlockState blockState, boolean includeData) {
+        ItemStack itemStack = super.getCloneItemStack(level, blockPos, blockState, includeData);
+        if (level.getBlockEntity(blockPos) instanceof LinkedChestBlockEntity blockEntity) {
             itemStack.set(ModRegistry.DYE_CHANNEL_DATA_COMPONENT_TYPE.value(), blockEntity.getDyeChannel());
         }
+
         return itemStack;
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
-        return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(level.getBlockEntity(pos));
+    public int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos blockPos, Direction direction) {
+        return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(level.getBlockEntity(blockPos));
     }
 
     @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+    public void animateTick(BlockState blockState, Level level, BlockPos blockPos, RandomSource random) {
         // NO-OP
     }
 
@@ -205,7 +214,7 @@ public class LinkedChestBlock extends EnderChestBlock implements HighlightShapeP
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new LinkedChestBlockEntity(pos, state);
+    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+        return new LinkedChestBlockEntity(blockPos, blockState);
     }
 }
