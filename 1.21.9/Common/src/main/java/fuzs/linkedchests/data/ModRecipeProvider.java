@@ -37,8 +37,9 @@ public class ModRecipeProvider extends AbstractRecipeProvider {
                 .pattern("#C#")
                 .pattern("@#@")
                 .unlockedBy(getHasName(Items.ENDER_EYE), this.has(Items.ENDER_EYE))
-                .save(new ForwardingRecipeOutput(recipeOutput,
-                        recipe -> new ShapedDyeChannelRecipe((ShapedRecipe) recipe)));
+                .save(new ForwardingRecipeOutput(recipeOutput, (Recipe<?> recipe) -> {
+                    return new ShapedDyeChannelRecipe((ShapedRecipe) recipe);
+                }));
         ShapedRecipeBuilder.shaped(this.items(), RecipeCategory.DECORATIONS, ModRegistry.LINKED_POUCH_ITEM.value())
                 .define('@', Items.ENDER_EYE)
                 .define('#', Items.LEATHER)
@@ -48,8 +49,9 @@ public class ModRecipeProvider extends AbstractRecipeProvider {
                 .pattern("#C#")
                 .pattern("@W@")
                 .unlockedBy(getHasName(Items.ENDER_EYE), this.has(Items.ENDER_EYE))
-                .save(new ForwardingRecipeOutput(recipeOutput,
-                        recipe -> new ShapedDyeChannelRecipe((ShapedRecipe) recipe)));
+                .save(new ForwardingRecipeOutput(recipeOutput, (Recipe<?> recipe) -> {
+                    return new ShapedDyeChannelRecipe((ShapedRecipe) recipe);
+                }));
         SpecialRecipeBuilder.special(DyeChannelRecipe::new).save(recipeOutput, "dye_channel");
     }
 

@@ -8,8 +8,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 public class LinkedChestModel extends ChestModel {
     private final ModelPart bottom;
@@ -28,7 +27,32 @@ public class LinkedChestModel extends ChestModel {
     }
 
     public static LayerDefinition createSingleBodyLayer() {
-        return ChestModel.createSingleBodyLayer().apply(LinkedChestModel::applyLinkedChestTransformation);
+        return createBodyLayer(Set.of("bottom", "lid"));
+    }
+
+    public static LayerDefinition createLockLayer() {
+        return createBodyLayer(Set.of("lock"));
+    }
+
+    public static LayerDefinition createLeftButtonLayer() {
+        return createBodyLayer(Set.of("left_button"));
+    }
+
+    public static LayerDefinition createMiddleButtonLayer() {
+        return createBodyLayer(Set.of("middle_button"));
+    }
+
+    public static LayerDefinition createRightButtonLayer() {
+        return createBodyLayer(Set.of("right_button"));
+    }
+
+    private static LayerDefinition createBodyLayer(Set<String> parts) {
+        return ChestModel.createSingleBodyLayer()
+                .apply(LinkedChestModel::applyLinkedChestTransformation)
+                .apply((MeshDefinition meshDefinition) -> {
+                    meshDefinition.getRoot().retainExactParts(parts);
+                    return meshDefinition;
+                });
     }
 
     private static MeshDefinition applyLinkedChestTransformation(MeshDefinition meshDefinition) {
@@ -46,22 +70,10 @@ public class LinkedChestModel extends ChestModel {
     }
 
     @Override
-    public void setupAnim(float openness) {
+    public void setupAnim(Float openness) {
         super.setupAnim(openness);
         for (ModelPart modelPart : this.buttons) {
             modelPart.xRot = this.lid.xRot;
         }
-    }
-
-    public List<ModelPart> getBaseModelParts() {
-        return List.of(this.bottom, this.lid);
-    }
-
-    public List<ModelPart> getLockModelParts() {
-        return Collections.singletonList(this.lock);
-    }
-
-    public List<ModelPart> getButtonModelParts(int index) {
-        return Collections.singletonList(this.buttons[index]);
     }
 }

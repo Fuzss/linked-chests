@@ -28,13 +28,14 @@ public class LinkedPouchItem extends Item {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
-        if (context.getPlayer().isShiftKeyDown() &&
-                level.getBlockEntity(context.getClickedPos()) instanceof LinkedChestBlockEntity blockEntity) {
-            if (!level.isClientSide) {
+        if (context.getPlayer().isShiftKeyDown()
+                && level.getBlockEntity(context.getClickedPos()) instanceof LinkedChestBlockEntity blockEntity) {
+            if (!level.isClientSide()) {
                 context.getItemInHand()
                         .set(ModRegistry.DYE_CHANNEL_DATA_COMPONENT_TYPE.value(), blockEntity.getDyeChannel());
             }
-            return InteractionResultHelper.sidedSuccess(level.isClientSide);
+
+            return InteractionResultHelper.sidedSuccess(level.isClientSide());
         } else {
             return super.useOn(context);
         }
@@ -43,7 +44,7 @@ public class LinkedPouchItem extends Item {
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand interactionHand) {
         ItemStack itemInHand = player.getItemInHand(interactionHand);
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             DyeChannel dyeChannel = itemInHand.getOrDefault(ModRegistry.DYE_CHANNEL_DATA_COMPONENT_TYPE.value(),
                     DyeChannel.DEFAULT);
             ContainerMenuHelper.openMenu(player,
@@ -53,7 +54,8 @@ public class LinkedPouchItem extends Item {
                     }, itemInHand.getHoverName()),
                     new LinkedMenu.LinkedData(dyeChannel.uuid().isPresent(), true));
         }
-        return InteractionResultHelper.sidedSuccess(itemInHand, level.isClientSide);
+
+        return InteractionResultHelper.sidedSuccess(itemInHand, level.isClientSide());
     }
 
     public Component getDescriptionComponent() {

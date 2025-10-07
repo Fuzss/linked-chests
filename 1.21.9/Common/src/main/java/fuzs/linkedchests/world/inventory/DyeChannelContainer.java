@@ -6,7 +6,7 @@ import fuzs.linkedchests.world.level.block.entity.DyeChannelStorage;
 import fuzs.puzzleslib.api.container.v1.ListBackedContainer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.item.ItemStack;
 
 public final class DyeChannelContainer implements ListBackedContainer {
@@ -19,15 +19,15 @@ public final class DyeChannelContainer implements ListBackedContainer {
     }
 
     @Override
-    public void startOpen(Player player) {
-        if (!player.isSpectator() && player instanceof ServerPlayer serverPlayer) {
+    public void startOpen(ContainerUser containerUser) {
+        if (containerUser instanceof ServerPlayer serverPlayer && !serverPlayer.isSpectator()) {
             this.storage.openersCounter().incrementOpeners(this.dyeChannel, serverPlayer);
         }
     }
 
     @Override
-    public void stopOpen(Player player) {
-        if (!player.isSpectator() && player instanceof ServerPlayer serverPlayer) {
+    public void stopOpen(ContainerUser containerUser) {
+        if (containerUser instanceof ServerPlayer serverPlayer && !serverPlayer.isSpectator()) {
             this.storage.openersCounter().decrementOpeners(this.dyeChannel, serverPlayer);
         }
     }
