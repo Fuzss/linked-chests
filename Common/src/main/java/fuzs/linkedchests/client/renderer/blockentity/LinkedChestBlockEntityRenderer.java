@@ -51,8 +51,8 @@ public class LinkedChestBlockEntityRenderer extends SingleChestRenderer<LinkedCh
     }
 
     @Override
-    protected void submitModel(LinkedChestRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector) {
-        super.submitModel(renderState, poseStack, submitNodeCollector);
+    protected void submitChestModel(LinkedChestRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector) {
+        super.submitChestModel(renderState, poseStack, submitNodeCollector);
         this.submitChestModel(renderState,
                 poseStack,
                 submitNodeCollector,
