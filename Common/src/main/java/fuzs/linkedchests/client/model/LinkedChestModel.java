@@ -1,26 +1,22 @@
 package fuzs.linkedchests.client.model;
 
-import net.minecraft.client.model.ChestModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.model.object.chest.ChestModel;
 
 import java.util.Set;
 
 public class LinkedChestModel extends ChestModel {
-    private final ModelPart bottom;
     private final ModelPart lid;
-    private final ModelPart lock;
     private final ModelPart[] buttons = new ModelPart[3];
 
     public LinkedChestModel(ModelPart root) {
         super(root);
-        this.bottom = root.getChild("bottom");
         this.lid = root.getChild("lid");
-        this.lock = root.getChild("lock");
         this.buttons[0] = root.getChild("left_button");
         this.buttons[1] = root.getChild("middle_button");
         this.buttons[2] = root.getChild("right_button");

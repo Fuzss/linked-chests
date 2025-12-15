@@ -23,7 +23,7 @@ public final class DyeChannelLidController {
         }
     }
 
-    public static void onLoggedIn(LocalPlayer player, MultiPlayerGameMode multiPlayerGameMode, Connection connection) {
+    public static void onPlayerJoin(LocalPlayer player, MultiPlayerGameMode multiPlayerGameMode, Connection connection) {
         CHEST_LID_CONTROLLERS.clear();
     }
 }

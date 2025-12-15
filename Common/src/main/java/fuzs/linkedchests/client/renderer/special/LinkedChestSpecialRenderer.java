@@ -9,20 +9,23 @@ import fuzs.linkedchests.client.model.geom.ModModelLayers;
 import fuzs.linkedchests.client.renderer.blockentity.LinkedChestModelSet;
 import fuzs.linkedchests.init.ModRegistry;
 import fuzs.linkedchests.world.level.block.entity.DyeChannel;
-import net.minecraft.client.model.ChestModel;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.model.object.chest.ChestModel;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.MaterialSet;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
-import java.util.Set;
+import java.util.function.Consumer;
 
+/**
+ * @see net.minecraft.client.renderer.special.ChestSpecialRenderer
+ */
 public class LinkedChestSpecialRenderer implements SpecialModelRenderer<DyeChannel> {
     private final MaterialSet materials;
     private final LinkedChestModelSet<ChestModel> chestModels;
@@ -73,7 +76,7 @@ public class LinkedChestSpecialRenderer implements SpecialModelRenderer<DyeChann
         submitNodeCollector.submitModel(chestModel,
                 this.openness,
                 poseStack,
-                material.renderType(RenderType::entitySolid),
+                material.renderType(RenderTypes::entitySolid),
                 packedLight,
                 packedOverlay,
                 color,
@@ -83,10 +86,10 @@ public class LinkedChestSpecialRenderer implements SpecialModelRenderer<DyeChann
     }
 
     @Override
-    public void getExtents(Set<Vector3f> set) {
+    public void getExtents(Consumer<Vector3fc> consumer) {
         PoseStack poseStack = new PoseStack();
         this.chestModels.chest().setupAnim(this.openness);
-        this.chestModels.chest().root().getExtentsForGui(poseStack, set);
+        this.chestModels.chest().root().getExtentsForGui(poseStack, consumer);
     }
 
     @Override
@@ -94,16 +97,16 @@ public class LinkedChestSpecialRenderer implements SpecialModelRenderer<DyeChann
         return itemStack.getOrDefault(ModRegistry.DYE_CHANNEL_DATA_COMPONENT_TYPE.value(), DyeChannel.DEFAULT);
     }
 
-    public record Unbaked(ResourceLocation chestTexture,
-                          ResourceLocation buttonsTexture,
+    public record Unbaked(Identifier chestTexture,
+                          Identifier buttonsTexture,
                           float openness) implements SpecialModelRenderer.Unbaked {
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                        ResourceLocation.CODEC.fieldOf("chest_texture").forGetter(Unbaked::chestTexture),
-                        ResourceLocation.CODEC.fieldOf("buttons_texture").forGetter(Unbaked::buttonsTexture),
+                        Identifier.CODEC.fieldOf("chest_texture").forGetter(Unbaked::chestTexture),
+                        Identifier.CODEC.fieldOf("buttons_texture").forGetter(Unbaked::buttonsTexture),
                         Codec.FLOAT.optionalFieldOf("openness", 0.0F).forGetter(Unbaked::openness))
                 .apply(instance, Unbaked::new));
 
-        public Unbaked(ResourceLocation chestTexture, ResourceLocation buttonsTexture) {
+        public Unbaked(Identifier chestTexture, Identifier buttonsTexture) {
             this(chestTexture, buttonsTexture, 0.0F);
         }
 
