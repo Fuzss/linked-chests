@@ -1,0 +1,61 @@
+{
+    "mod": {
+        "id": "linkedchests",
+        "group": "fuzs.linkedchests",
+        "name": "Linked Chests",
+        "version": "21.11.0",
+        "authors": [
+            "Fuzs"
+        ],
+        "description": "Effortless linked storage - access the same inventory from any chest, any place, any time!",
+        "license": "MPL-2.0"
+    },
+    "dependencies": [
+        {
+            "name": "fabricapi",
+            "type": "required",
+            "platforms": [
+                "fabric"
+            ]
+        },
+        {
+            "name": "forgeconfigapiport",
+            "type": "required",
+            "platforms": [
+                "fabric"
+            ]
+        },
+        {
+            "name": "puzzleslib",
+            "type": "required",
+            "platforms": [
+                "fabric",
+                "neoforge"
+            ]
+        }
+    ],
+    "links": [
+        {
+            "name": "github",
+            "slug": "linkedchests"
+        },
+        {
+            "name": "curseforge",
+            "slug": "linked-chests",
+            "id": "1258307"
+        },
+        {
+            "name": "modrinth",
+            "slug": "linked-chests",
+            "id": "Mr2x2AUf"
+        }
+    ],
+    "environments": {
+        "client": "required",
+        "server": "required"
+    },
+    "platforms": [
+        "fabric",
+        "neoforge"
+    ]
+}

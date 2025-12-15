@@ -7,23 +7,24 @@ import fuzs.linkedchests.client.model.geom.ModModelLayers;
 import fuzs.linkedchests.client.renderer.blockentity.state.LinkedChestRenderState;
 import fuzs.linkedchests.world.level.block.entity.LinkedChestBlockEntity;
 import fuzs.puzzleslib.api.client.renderer.v1.SingleChestRenderer;
-import net.minecraft.client.model.ChestModel;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.model.object.chest.ChestModel;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.ChestRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class LinkedChestBlockEntityRenderer extends SingleChestRenderer<LinkedChestBlockEntity, ChestModel, LinkedChestRenderState> {
-    public static final ResourceLocation LINKED_CHEST_TEXTURE = LinkedChests.id("linked");
-    public static final ResourceLocation LINKED_CHEST_BUTTONS_TEXTURE = LinkedChests.id("linked_buttons");
+    public static final Identifier LINKED_CHEST_TEXTURE = LinkedChests.id("linked");
+    public static final Identifier LINKED_CHEST_BUTTONS_TEXTURE = LinkedChests.id("linked_buttons");
     public static final Material LINKED_CHEST_MATERIAL = Sheets.CHEST_MAPPER.apply(LINKED_CHEST_TEXTURE);
     public static final Material LINKED_CHEST_BUTTONS_MATERIAL = Sheets.CHEST_MAPPER.apply(LINKED_CHEST_BUTTONS_TEXTURE);
     private final LinkedChestModelSet<ChestModel> chestModels;
@@ -70,7 +71,7 @@ public class LinkedChestBlockEntityRenderer extends SingleChestRenderer<LinkedCh
     }
 
     private void submitChestModel(LinkedChestRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, ChestModel chestModel, Material material, int color) {
-        RenderType renderType = material.renderType(RenderType::entityCutout);
+        RenderType renderType = material.renderType(RenderTypes::entityCutout);
         TextureAtlasSprite textureAtlasSprite = this.materials.get(material);
         submitNodeCollector.submitModel(chestModel,
                 renderState.getOpenness(),

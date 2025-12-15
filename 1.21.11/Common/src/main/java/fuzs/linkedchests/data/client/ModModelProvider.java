@@ -15,7 +15,7 @@ import net.minecraft.client.data.models.model.*;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.special.ChestSpecialRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -40,23 +40,23 @@ public class ModModelProvider extends AbstractModelProvider {
                 Blocks.END_STONE,
                 LinkedChestBlockEntityRenderer.LINKED_CHEST_TEXTURE,
                 true,
-                (ResourceLocation resourceLocation) -> {
-                    return new LinkedChestSpecialRenderer.Unbaked(resourceLocation,
+                (Identifier identifier) -> {
+                    return new LinkedChestSpecialRenderer.Unbaked(identifier,
                             LinkedChestBlockEntityRenderer.LINKED_CHEST_BUTTONS_TEXTURE);
                 },
                 blockModelGenerators);
     }
 
-    public final void createChest(Block chestBlock, Block particleBlock, ResourceLocation texture, boolean useGiftTexture, Function<ResourceLocation, SpecialModelRenderer.Unbaked> unbakedRendererFactory, BlockModelGenerators blockModelGenerators) {
+    public final void createChest(Block chestBlock, Block particleBlock, Identifier texture, boolean useGiftTexture, Function<Identifier, SpecialModelRenderer.Unbaked> unbakedRendererFactory, BlockModelGenerators blockModelGenerators) {
         blockModelGenerators.createParticleOnlyBlock(chestBlock, particleBlock);
         Item item = chestBlock.asItem();
-        ResourceLocation resourceLocation = ModelTemplates.CHEST_INVENTORY.create(item,
+        Identifier identifier = ModelTemplates.CHEST_INVENTORY.create(item,
                 TextureMapping.particle(particleBlock),
                 blockModelGenerators.modelOutput);
-        ItemModel.Unbaked unbaked = ItemModelUtils.specialModel(resourceLocation,
+        ItemModel.Unbaked unbaked = ItemModelUtils.specialModel(identifier,
                 unbakedRendererFactory.apply(texture));
         if (useGiftTexture) {
-            ItemModel.Unbaked unbaked2 = ItemModelUtils.specialModel(resourceLocation,
+            ItemModel.Unbaked unbaked2 = ItemModelUtils.specialModel(identifier,
                     unbakedRendererFactory.apply(ChestSpecialRenderer.GIFT_CHEST_TEXTURE));
             blockModelGenerators.itemModelOutput.accept(item, ItemModelUtils.isXmas(unbaked2, unbaked));
         } else {
@@ -99,7 +99,7 @@ public class ModModelProvider extends AbstractModelProvider {
                 falseModel);
     }
 
-    public final ItemModel.Unbaked createLinkedPouch(ResourceLocation itemModel, ResourceLocation baseLocation, ResourceLocation dyeSlotLocation, ItemModelGenerators itemModelGenerators) {
+    public final ItemModel.Unbaked createLinkedPouch(Identifier itemModel, Identifier baseLocation, Identifier dyeSlotLocation, ItemModelGenerators itemModelGenerators) {
         TextureMapping textureMapping = new TextureMapping().put(TextureSlot.LAYER0, baseLocation)
                 .put(TextureSlot.LAYER1, dyeSlotLocation.withSuffix("_left_dye_slot"))
                 .put(TextureSlot.LAYER2, dyeSlotLocation.withSuffix("_middle_dye_slot"))

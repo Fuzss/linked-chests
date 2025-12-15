@@ -1,6 +1,5 @@
 package fuzs.linkedchests.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.linkedchests.LinkedChests;
 import fuzs.linkedchests.client.color.item.DyeChannelTintSource;
 import fuzs.linkedchests.client.handler.DyeChannelLidController;
@@ -21,16 +20,12 @@ import fuzs.puzzleslib.api.client.core.v1.context.LayerDefinitionsContext;
 import fuzs.puzzleslib.api.client.core.v1.context.MenuScreensContext;
 import fuzs.puzzleslib.api.client.event.v1.ClientTickEvents;
 import fuzs.puzzleslib.api.client.event.v1.entity.player.ClientPlayerNetworkEvents;
-import fuzs.puzzleslib.api.client.event.v1.renderer.SubmitBlockOutlineCallback;
+import fuzs.puzzleslib.api.client.event.v1.renderer.ExtractBlockOutlineCallback;
 import fuzs.puzzleslib.api.client.gui.v2.tooltip.ItemTooltipRegistry;
 import fuzs.puzzleslib.api.event.v1.core.EventResultHolder;
-import net.minecraft.client.Camera;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.state.BlockOutlineRenderState;
-import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -45,32 +40,18 @@ public class LinkedChestsClient implements ClientModConstructor {
 
     private static void registerEventHandlers() {
         ClientTickEvents.END.register(DyeChannelLidController::onEndClientTick);
-        ClientPlayerNetworkEvents.LOGGED_IN.register(DyeChannelLidController::onLoggedIn);
-        SubmitBlockOutlineCallback.EVENT.register((LevelRenderer levelRenderer, ClientLevel clientLevel, BlockState blockState, BlockHitResult hitResult, CollisionContext collisionContext, Camera camera) -> {
+        ClientPlayerNetworkEvents.JOIN.register(DyeChannelLidController::onPlayerJoin);
+        ExtractBlockOutlineCallback.EVENT.register((ClientLevel clientLevel, BlockPos blockPos, BlockState blockState, BlockHitResult hitResult, CollisionContext collisionContext) -> {
             if (blockState.getBlock() instanceof HighlightShapeProvider block && clientLevel.getWorldBorder()
                     .isWithinBounds(hitResult.getBlockPos())) {
-                return EventResultHolder.allow((BlockOutlineRenderState renderState, MultiBufferSource.BufferSource bufferSource, PoseStack poseStack, boolean isTranslucent, LevelRenderState levelRenderState) -> {
-                    VoxelShape voxelShape = block.getHighlightShape(blockState,
-                            clientLevel,
-                            hitResult.getBlockPos(),
-                            hitResult.getLocation());
-                    renderState = new BlockOutlineRenderState(renderState.pos(),
-                            renderState.isTranslucent(),
-                            renderState.highContrast(),
-                            voxelShape,
-                            renderState.collisionShape(),
-                            renderState.occlusionShape(),
-                            renderState.interactionShape());
-                    SubmitBlockOutlineCallback.CustomBlockOutlineRenderer.renderVanillaBlockOutline(renderState,
-                            bufferSource,
-                            poseStack,
-                            isTranslucent,
-                            levelRenderState);
-                    return true;
-                });
+                VoxelShape voxelShape = block.getHighlightShape(blockState,
+                        clientLevel,
+                        hitResult.getBlockPos(),
+                        hitResult.getLocation());
+                return EventResultHolder.interrupt(voxelShape);
+            } else {
+                return EventResultHolder.pass();
             }
-
-            return EventResultHolder.pass();
         });
     }
 
