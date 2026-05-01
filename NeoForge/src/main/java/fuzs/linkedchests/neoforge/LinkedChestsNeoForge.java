@@ -1,13 +1,13 @@
 package fuzs.linkedchests.neoforge;
 
-import fuzs.linkedchests.LinkedChests;
-import fuzs.linkedchests.data.ModRecipeProvider;
-import fuzs.linkedchests.data.loot.ModBlockLootProvider;
-import fuzs.linkedchests.data.tags.ModBlockTagProvider;
-import fuzs.linkedchests.data.tags.ModItemTagProvider;
-import fuzs.linkedchests.init.ModRegistry;
-import fuzs.linkedchests.world.level.block.entity.DyeChannel;
-import fuzs.linkedchests.world.level.block.entity.DyeChannelManager;
+import fuzs.linkedchests.common.LinkedChests;
+import fuzs.linkedchests.common.data.ModRecipeProvider;
+import fuzs.linkedchests.common.data.loot.ModBlockLootProvider;
+import fuzs.linkedchests.common.data.tags.ModBlockTagProvider;
+import fuzs.linkedchests.common.data.tags.ModItemTagProvider;
+import fuzs.linkedchests.common.init.ModRegistry;
+import fuzs.linkedchests.common.world.level.block.entity.DyeChannel;
+import fuzs.linkedchests.common.world.level.block.entity.DyeChannelManager;
 import fuzs.puzzleslib.common.api.core.v1.ModConstructor;
 import fuzs.puzzleslib.neoforge.api.data.v2.core.DataProviderHelper;
 import fuzs.puzzleslib.neoforge.api.init.v3.capability.NeoForgeCapabilityHelper;

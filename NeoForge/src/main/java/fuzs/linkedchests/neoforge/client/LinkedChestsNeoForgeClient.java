@@ -1,11 +1,11 @@
 package fuzs.linkedchests.neoforge.client;
 
-import fuzs.linkedchests.LinkedChests;
-import fuzs.linkedchests.client.LinkedChestsClient;
-import fuzs.linkedchests.data.client.ModLanguageProvider;
+import fuzs.linkedchests.common.LinkedChests;
+import fuzs.linkedchests.common.client.LinkedChestsClient;
+import fuzs.linkedchests.common.data.client.ModLanguageProvider;
 import fuzs.puzzleslib.common.api.client.core.v1.ClientModConstructor;
 import fuzs.puzzleslib.neoforge.api.data.v2.core.DataProviderHelper;
-import fuzs.linkedchests.data.client.ModModelProvider;
+import fuzs.linkedchests.common.data.client.ModModelProvider;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.Mod;
 

@@ -1,7 +1,7 @@
 package fuzs.linkedchests.fabric.client;
 
-import fuzs.linkedchests.LinkedChests;
-import fuzs.linkedchests.client.LinkedChestsClient;
+import fuzs.linkedchests.common.LinkedChests;
+import fuzs.linkedchests.common.client.LinkedChestsClient;
 import fuzs.puzzleslib.common.api.client.core.v1.ClientModConstructor;
 import net.fabricmc.api.ClientModInitializer;
 

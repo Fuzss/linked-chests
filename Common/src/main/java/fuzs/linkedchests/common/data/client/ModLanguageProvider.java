@@ -1,0 +1,21 @@
+package fuzs.linkedchests.common.data.client;
+
+import fuzs.linkedchests.common.init.ModRegistry;
+import fuzs.linkedchests.common.world.level.block.LinkedChestBlock;
+import fuzs.puzzleslib.common.api.client.data.v2.AbstractLanguageProvider;
+import fuzs.puzzleslib.common.api.data.v2.core.DataProviderContext;
+
+public class ModLanguageProvider extends AbstractLanguageProvider {
+
+    public ModLanguageProvider(DataProviderContext context) {
+        super(context);
+    }
+
+    @Override
+    public void addTranslations(TranslationBuilder builder) {
+        builder.addBlock(ModRegistry.LINKED_CHEST_BLOCK, "Linked Chest");
+        builder.addItem(ModRegistry.LINKED_POUCH_ITEM, "Linked Pouch");
+        builder.add(((LinkedChestBlock) ModRegistry.LINKED_CHEST_BLOCK.value()).getDescriptionComponent(),
+                "Grants access to items stored in interdimensional realms.");
+    }
+}
