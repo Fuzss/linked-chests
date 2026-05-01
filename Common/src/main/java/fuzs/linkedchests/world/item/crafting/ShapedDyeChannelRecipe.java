@@ -3,8 +3,6 @@ package fuzs.linkedchests.world.item.crafting;
 import com.mojang.serialization.MapCodec;
 import fuzs.linkedchests.init.ModRegistry;
 import fuzs.linkedchests.world.level.block.entity.DyeChannel;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.loot.packs.LootData;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -26,20 +24,23 @@ public class ShapedDyeChannelRecipe extends ShapedRecipe {
             .stream()
             .collect(Collectors.toMap((Map.Entry<DyeColor, ItemLike> entry) -> entry.getValue().asItem(),
                     Map.Entry::getKey,
-                    (o1, o2) -> o1,
+                    (o1, o2) -> o2,
                     IdentityHashMap::new));
+    public static final MapCodec<ShapedDyeChannelRecipe> MAP_CODEC = ShapedRecipe.MAP_CODEC.xmap(ShapedDyeChannelRecipe::new,
+            Function.identity());
+    public static final StreamCodec<RegistryFriendlyByteBuf, ShapedDyeChannelRecipe> STREAM_CODEC = ShapedRecipe.STREAM_CODEC.map(
+            ShapedDyeChannelRecipe::new,
+            Function.identity());
+    public static final RecipeSerializer<ShapedDyeChannelRecipe> SERIALIZER = new RecipeSerializer<>(MAP_CODEC,
+            STREAM_CODEC);
 
-    public ShapedDyeChannelRecipe(ShapedRecipe shapedRecipe) {
-        super(shapedRecipe.group(),
-                shapedRecipe.category(),
-                shapedRecipe.pattern,
-                shapedRecipe.assemble(CraftingInput.EMPTY, RegistryAccess.EMPTY),
-                shapedRecipe.showNotification());
+    public ShapedDyeChannelRecipe(ShapedRecipe recipe) {
+        super(recipe.commonInfo, recipe.bookInfo, recipe.pattern, recipe.result);
     }
 
     @Override
-    public ItemStack assemble(CraftingInput craftingInput, HolderLookup.Provider registries) {
-        ItemStack itemStack = super.assemble(craftingInput, registries);
+    public ItemStack assemble(CraftingInput craftingInput) {
+        ItemStack itemStack = super.assemble(craftingInput);
         // if there is a wool block somewhere in here copy the color from that for the dye channel data
         for (ItemStack input : craftingInput.items()) {
             DyeColor dyeColor = DYE_BY_ITEM.get(input.getItem());
@@ -48,25 +49,12 @@ public class ShapedDyeChannelRecipe extends ShapedRecipe {
                 break;
             }
         }
+
         return itemStack;
     }
 
     @Override
-    public RecipeSerializer<? extends ShapedDyeChannelRecipe> getSerializer() {
-        return ModRegistry.SHAPED_DYE_CHANNEL_RECIPE_SERIALIZER.value();
-    }
-
-    public static class Serializer implements RecipeSerializer<ShapedDyeChannelRecipe> {
-
-        @Override
-        public MapCodec<ShapedDyeChannelRecipe> codec() {
-            return ShapedRecipe.Serializer.SHAPED_RECIPE.codec().xmap(ShapedDyeChannelRecipe::new, Function.identity());
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, ShapedDyeChannelRecipe> streamCodec() {
-            return ShapedRecipe.Serializer.SHAPED_RECIPE.streamCodec()
-                    .map(ShapedDyeChannelRecipe::new, Function.identity());
-        }
+    public RecipeSerializer<ShapedRecipe> getSerializer() {
+        return (RecipeSerializer<ShapedRecipe>) (RecipeSerializer<?>) ModRegistry.SHAPED_DYE_CHANNEL_RECIPE_SERIALIZER.value();
     }
 }

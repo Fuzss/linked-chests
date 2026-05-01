@@ -1,2 +1,4 @@
 classTweaker    v2  official
 accessible  field   net/minecraft/world/item/crafting/ShapedRecipe  pattern Lnet/minecraft/world/item/crafting/ShapedRecipePattern;
+transitive-accessible   field   net/minecraft/world/item/crafting/NormalCraftingRecipe  commonInfo  Lnet/minecraft/world/item/crafting/Recipe$CommonInfo;
+transitive-accessible   field   net/minecraft/world/item/crafting/NormalCraftingRecipe  bookInfo    Lnet/minecraft/world/item/crafting/CraftingRecipe$CraftingBookInfo;

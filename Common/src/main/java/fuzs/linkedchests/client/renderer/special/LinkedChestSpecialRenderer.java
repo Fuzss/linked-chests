@@ -14,10 +14,9 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.MaterialSet;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3fc;
 
@@ -27,14 +26,14 @@ import java.util.function.Consumer;
  * @see net.minecraft.client.renderer.special.ChestSpecialRenderer
  */
 public class LinkedChestSpecialRenderer implements SpecialModelRenderer<DyeChannel> {
-    private final MaterialSet materials;
+    private final SpriteGetter sprites;
     private final LinkedChestModelSet<ChestModel> chestModels;
-    private final Material chestMaterial;
-    private final Material buttonsMaterial;
+    private final SpriteId chestMaterial;
+    private final SpriteId buttonsMaterial;
     private final float openness;
 
-    public LinkedChestSpecialRenderer(MaterialSet materials, LinkedChestModelSet<ChestModel> chestModels, Material chestMaterial, Material buttonsMaterial, float openness) {
-        this.materials = materials;
+    public LinkedChestSpecialRenderer(SpriteGetter sprites, LinkedChestModelSet<ChestModel> chestModels, SpriteId chestMaterial, SpriteId buttonsMaterial, float openness) {
+        this.sprites = sprites;
         this.chestModels = chestModels;
         this.chestMaterial = chestMaterial;
         this.buttonsMaterial = buttonsMaterial;
@@ -42,7 +41,7 @@ public class LinkedChestSpecialRenderer implements SpecialModelRenderer<DyeChann
     }
 
     @Override
-    public void submit(DyeChannel dyeChannel, ItemDisplayContext itemDisplayContext, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLight, int packedOverlay, boolean hasFoilType, int outlineColor) {
+    public void submit(DyeChannel dyeChannel, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLight, int packedOverlay, boolean hasFoilType, int outlineColor) {
         this.submitChestModel(poseStack,
                 submitNodeCollector,
                 packedLight,
@@ -72,7 +71,7 @@ public class LinkedChestSpecialRenderer implements SpecialModelRenderer<DyeChann
         }
     }
 
-    private void submitChestModel(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLight, int packedOverlay, int outlineColor, ChestModel chestModel, Material material, int color) {
+    private void submitChestModel(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLight, int packedOverlay, int outlineColor, ChestModel chestModel, SpriteId material, int color) {
         submitNodeCollector.submitModel(chestModel,
                 this.openness,
                 poseStack,
@@ -80,7 +79,7 @@ public class LinkedChestSpecialRenderer implements SpecialModelRenderer<DyeChann
                 packedLight,
                 packedOverlay,
                 color,
-                this.materials.get(material),
+                this.sprites.get(material),
                 outlineColor,
                 null);
     }
@@ -99,7 +98,7 @@ public class LinkedChestSpecialRenderer implements SpecialModelRenderer<DyeChann
 
     public record Unbaked(Identifier chestTexture,
                           Identifier buttonsTexture,
-                          float openness) implements SpecialModelRenderer.Unbaked {
+                          float openness) implements SpecialModelRenderer.Unbaked<DyeChannel> {
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                         Identifier.CODEC.fieldOf("chest_texture").forGetter(Unbaked::chestTexture),
                         Identifier.CODEC.fieldOf("buttons_texture").forGetter(Unbaked::buttonsTexture),
@@ -116,10 +115,10 @@ public class LinkedChestSpecialRenderer implements SpecialModelRenderer<DyeChann
         }
 
         @Override
-        public SpecialModelRenderer<?> bake(BakingContext context) {
+        public LinkedChestSpecialRenderer bake(BakingContext context) {
             LinkedChestModelSet<ChestModel> chestModels = ModModelLayers.LINKED_CHEST_MODEL_LAYERS.map(context.entityModelSet()::bakeLayer)
                     .map(LinkedChestModel::new);
-            return new LinkedChestSpecialRenderer(context.materials(),
+            return new LinkedChestSpecialRenderer(context.sprites(),
                     chestModels,
                     Sheets.CHEST_MAPPER.apply(this.chestTexture),
                     Sheets.CHEST_MAPPER.apply(this.buttonsTexture),

@@ -13,20 +13,24 @@ import fuzs.linkedchests.init.ModRegistry;
 import fuzs.linkedchests.world.item.LinkedPouchItem;
 import fuzs.linkedchests.world.level.block.HighlightShapeProvider;
 import fuzs.linkedchests.world.level.block.LinkedChestBlock;
-import fuzs.puzzleslib.api.client.core.v1.ClientModConstructor;
-import fuzs.puzzleslib.api.client.core.v1.context.BlockEntityRenderersContext;
-import fuzs.puzzleslib.api.client.core.v1.context.ItemModelsContext;
-import fuzs.puzzleslib.api.client.core.v1.context.LayerDefinitionsContext;
-import fuzs.puzzleslib.api.client.core.v1.context.MenuScreensContext;
-import fuzs.puzzleslib.api.client.event.v1.ClientTickEvents;
-import fuzs.puzzleslib.api.client.event.v1.entity.player.ClientPlayerNetworkEvents;
-import fuzs.puzzleslib.api.client.event.v1.renderer.ExtractBlockOutlineCallback;
-import fuzs.puzzleslib.api.client.gui.v2.tooltip.ItemTooltipRegistry;
-import fuzs.puzzleslib.api.event.v1.core.EventResultHolder;
+import fuzs.puzzleslib.common.api.client.core.v1.ClientModConstructor;
+import fuzs.puzzleslib.common.api.client.core.v1.context.*;
+import fuzs.puzzleslib.common.api.client.event.v1.ClientTickEvents;
+import fuzs.puzzleslib.common.api.client.event.v1.entity.player.ClientPlayerNetworkEvents;
+import fuzs.puzzleslib.common.api.client.event.v1.renderer.ExtractBlockOutlineCallback;
+import fuzs.puzzleslib.common.api.client.gui.v2.tooltip.ItemTooltipRegistry;
+import fuzs.puzzleslib.common.api.event.v1.core.EventResultHolder;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.block.BuiltInBlockModels;
+import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.renderer.blockentity.ChestRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -96,5 +100,22 @@ public class LinkedChestsClient implements ClientModConstructor {
     public void onRegisterBlockEntityRenderers(BlockEntityRenderersContext context) {
         context.registerBlockEntityRenderer(ModRegistry.LINKED_CHEST_BLOCK_ENTITY.value(),
                 LinkedChestBlockEntityRenderer::new);
+    }
+
+    @Override
+    public void onRegisterBuiltInBlockModels(BuiltInBlockModelsContext context) {
+        context.registerModelFactory(ModRegistry.LINKED_CHEST_BLOCK.value(),
+                createSingletonChest(LinkedChestBlockEntityRenderer.LINKED_CHEST_TEXTURE));
+    }
+
+    public static BuiltInBlockModels.SpecialModelFactory createSingletonChest(Identifier texture) {
+        return BuiltInBlockModels.specialModelWithPropertyDispatch(ChestBlock.FACING,
+                facing -> createChest(texture, ChestType.SINGLE, facing));
+    }
+
+    public static BlockModel.Unbaked createChest(Identifier texture, ChestType chestType, Direction facing) {
+        return BuiltInBlockModels.special(new LinkedChestSpecialRenderer.Unbaked(texture,
+                        LinkedChestBlockEntityRenderer.LINKED_CHEST_BUTTONS_TEXTURE),
+                ChestRenderer.modelTransformation(facing));
     }
 }

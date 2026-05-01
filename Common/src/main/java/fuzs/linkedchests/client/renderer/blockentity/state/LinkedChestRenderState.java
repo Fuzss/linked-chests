@@ -1,15 +1,15 @@
 package fuzs.linkedchests.client.renderer.blockentity.state;
 
 import fuzs.linkedchests.client.renderer.blockentity.LinkedChestBlockEntityRenderer;
-import fuzs.puzzleslib.api.client.renderer.v1.SingleChestRenderer;
-import net.minecraft.client.resources.model.Material;
+import fuzs.puzzleslib.common.api.client.renderer.v1.SingleChestRenderer;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 
 public class LinkedChestRenderState extends SingleChestRenderer.SingleChestRenderState {
-    public Material buttonsMaterial = LinkedChestBlockEntityRenderer.LINKED_CHEST_BUTTONS_MATERIAL;
+    public SpriteId buttonsMaterial = LinkedChestBlockEntityRenderer.LINKED_CHEST_BUTTONS_MATERIAL;
     public boolean isPersonal;
     public int[] slotColors = new int[3];
 
-    public Material getLockMaterial() {
+    public SpriteId getLockMaterial() {
         return this.isPersonal ? this.buttonsMaterial : this.chestMaterial;
     }
 }

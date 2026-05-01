@@ -1,9 +1,9 @@
 package fuzs.linkedchests.world.level.block.entity;
 
 import fuzs.linkedchests.network.ClientboundUpdateLidControllerMessage;
-import fuzs.puzzleslib.api.container.v1.ListBackedContainer;
-import fuzs.puzzleslib.api.network.v4.MessageSender;
-import fuzs.puzzleslib.api.network.v4.PlayerSet;
+import fuzs.puzzleslib.common.api.container.v1.ListBackedContainer;
+import fuzs.puzzleslib.common.api.network.v4.MessageSender;
+import fuzs.puzzleslib.common.api.network.v4.PlayerSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.MinecraftServer;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * Adapted from {@link net.minecraft.world.level.block.entity.ContainerOpenersCounter}.
+ * @see net.minecraft.world.level.block.entity.ContainerOpenersCounter
  */
 public class LinkedChestOpenersCounter {
     private final Predicate<NonNullList<ItemStack>> containerChecker;
@@ -48,18 +48,18 @@ public class LinkedChestOpenersCounter {
         this.incrementOpeners(dyeChannel, serverPlayer, serverPlayer.blockPosition(), serverPlayer.getSoundSource());
     }
 
-    public void incrementOpeners(DyeChannel dyeChannel, ServerPlayer serverPlayer, BlockPos pos, SoundSource soundSource) {
+    public void incrementOpeners(DyeChannel dyeChannel, ServerPlayer serverPlayer, BlockPos blockPos, SoundSource soundSource) {
         ServerLevel serverLevel = serverPlayer.level();
         if (this.openCount++ == 0) {
             serverLevel.playSound(null,
-                    pos.getX() + 0.5,
-                    pos.getY() + 0.5,
-                    pos.getZ() + 0.5,
+                    blockPos.getX() + 0.5,
+                    blockPos.getY() + 0.5,
+                    blockPos.getZ() + 0.5,
                     SoundEvents.ENDER_CHEST_OPEN,
                     soundSource,
                     0.5F,
-                    serverLevel.random.nextFloat() * 0.1F + 0.9F);
-            serverLevel.gameEvent(serverPlayer, GameEvent.CONTAINER_OPEN, pos);
+                    serverLevel.getRandom().nextFloat() * 0.1F + 0.9F);
+            serverLevel.gameEvent(serverPlayer, GameEvent.CONTAINER_OPEN, blockPos);
             this.scheduleRecheck = true;
         }
 
@@ -80,7 +80,7 @@ public class LinkedChestOpenersCounter {
                     SoundEvents.ENDER_CHEST_CLOSE,
                     soundSource,
                     0.5F,
-                    serverLevel.random.nextFloat() * 0.1F + 0.9F);
+                    serverLevel.getRandom().nextFloat() * 0.1F + 0.9F);
             serverLevel.gameEvent(serverPlayer, GameEvent.CONTAINER_CLOSE, blockPos);
         }
 
@@ -95,6 +95,7 @@ public class LinkedChestOpenersCounter {
                 this.openCount = playersWithContainerOpen;
                 this.openerCountChanged(dyeChannel, server, playersWithContainerOpen);
             }
+
             if (this.openCount > 0) {
                 this.scheduleRecheck = true;
             }

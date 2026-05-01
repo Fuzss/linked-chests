@@ -5,13 +5,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import fuzs.linkedchests.LinkedChests;
 import fuzs.linkedchests.config.ServerConfig;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.util.Util;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.DyeItem;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -104,7 +104,7 @@ public record DyeChannel(DyeColor leftColor, DyeColor middleColor, DyeColor righ
         return inventoryRows * 9;
     }
 
-    public static DyeColor getDyeColor(Item item) {
-        return item instanceof DyeItem dyeItem ? dyeItem.getDyeColor() : DyeColor.WHITE;
+    public static DyeColor getDyeColor(ItemStack itemStack) {
+        return itemStack.getOrDefault(DataComponents.DYE, DyeColor.WHITE);
     }
 }

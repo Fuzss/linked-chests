@@ -2,7 +2,7 @@ package fuzs.linkedchests.client.model.geom;
 
 import fuzs.linkedchests.LinkedChests;
 import fuzs.linkedchests.client.renderer.blockentity.LinkedChestModelSet;
-import fuzs.puzzleslib.api.client.init.v1.ModelLayerFactory;
+import fuzs.puzzleslib.common.api.client.init.v1.ModelLayerFactory;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 
 public class ModModelLayers {

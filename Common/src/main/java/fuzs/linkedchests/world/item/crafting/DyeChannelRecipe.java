@@ -1,13 +1,14 @@
 package fuzs.linkedchests.world.item.crafting;
 
+import com.mojang.serialization.MapCodec;
 import fuzs.linkedchests.init.ModRegistry;
 import fuzs.linkedchests.world.level.block.entity.DyeChannel;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -20,11 +21,11 @@ import java.util.List;
 import java.util.function.ObjIntConsumer;
 import java.util.stream.Collectors;
 
-public class DyeChannelRecipe extends CustomRecipe {
-
-    public DyeChannelRecipe(CraftingBookCategory category) {
-        super(category);
-    }
+public final class DyeChannelRecipe extends CustomRecipe {
+    public static final DyeChannelRecipe INSTANCE = new DyeChannelRecipe();
+    public static final MapCodec<DyeChannelRecipe> MAP_CODEC = MapCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, DyeChannelRecipe> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+    public static final RecipeSerializer<DyeChannelRecipe> SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
 
     @Override
     public boolean matches(CraftingInput craftingInput, Level level) {
@@ -84,7 +85,7 @@ public class DyeChannelRecipe extends CustomRecipe {
             if (posX >= 0 && posX < craftingInput.width() && posY >= 0 && posY < craftingInput.height()) {
                 ItemStack itemStack = craftingInput.getItem(posX, posY);
                 if (itemStack.is(ModRegistry.DYE_CHANNEL_COLOR_PROVIDERS_ITEM_TAG)) {
-                    consumer.accept(DyeChannel.getDyeColor(itemStack.getItem()), i);
+                    consumer.accept(DyeChannel.getDyeColor(itemStack), i);
                     dyeItems.add(new PositionedItem(itemStack, posX, posY));
                 }
             }
@@ -93,7 +94,7 @@ public class DyeChannelRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput craftingInput, HolderLookup.Provider registries) {
+    public ItemStack assemble(CraftingInput craftingInput) {
         PositionedItem positionedItem = this.getDyeChannelItem(craftingInput);
         if (positionedItem != null) {
             ItemStack itemStack = positionedItem.itemStack().copy();

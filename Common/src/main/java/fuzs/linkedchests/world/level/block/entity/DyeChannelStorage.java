@@ -1,7 +1,7 @@
 package fuzs.linkedchests.world.level.block.entity;
 
 import com.mojang.serialization.Codec;
-import fuzs.puzzleslib.api.util.v1.CodecExtras;
+import fuzs.puzzleslib.common.api.util.v1.CodecExtras;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 

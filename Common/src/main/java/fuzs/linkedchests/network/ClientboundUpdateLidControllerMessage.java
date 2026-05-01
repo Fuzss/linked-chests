@@ -2,8 +2,8 @@ package fuzs.linkedchests.network;
 
 import fuzs.linkedchests.client.handler.DyeChannelLidController;
 import fuzs.linkedchests.world.level.block.entity.DyeChannel;
-import fuzs.puzzleslib.api.network.v4.message.MessageListener;
-import fuzs.puzzleslib.api.network.v4.message.play.ClientboundPlayMessage;
+import fuzs.puzzleslib.common.api.network.v4.message.MessageListener;
+import fuzs.puzzleslib.common.api.network.v4.message.play.ClientboundPlayMessage;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

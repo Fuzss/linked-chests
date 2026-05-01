@@ -6,21 +6,18 @@ import fuzs.linkedchests.client.renderer.item.properties.conditional.LinkedPouch
 import fuzs.linkedchests.client.renderer.item.properties.conditional.LinkedPouchPersonalModelProperty;
 import fuzs.linkedchests.client.renderer.special.LinkedChestSpecialRenderer;
 import fuzs.linkedchests.init.ModRegistry;
-import fuzs.puzzleslib.api.client.data.v2.AbstractModelProvider;
-import fuzs.puzzleslib.api.client.data.v2.models.ModelLocationHelper;
-import fuzs.puzzleslib.api.data.v2.core.DataProviderContext;
+import fuzs.puzzleslib.common.api.client.data.v2.AbstractModelProvider;
+import fuzs.puzzleslib.common.api.client.data.v2.models.ItemModelGenerationHelper;
+import fuzs.puzzleslib.common.api.client.data.v2.models.ModelLocationHelper;
+import fuzs.puzzleslib.common.api.data.v2.core.DataProviderContext;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.*;
 import net.minecraft.client.renderer.item.ItemModel;
-import net.minecraft.client.renderer.special.ChestSpecialRenderer;
-import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-
-import java.util.function.Function;
 
 public class ModModelProvider extends AbstractModelProvider {
     public static final TextureSlot LAYER3_TEXTURE_SLOT = TextureSlot.create("layer3");
@@ -36,32 +33,15 @@ public class ModModelProvider extends AbstractModelProvider {
 
     @Override
     public void addBlockModels(BlockModelGenerators blockModelGenerators) {
-        this.createChest(ModRegistry.LINKED_CHEST_BLOCK.value(),
+        ItemModelGenerationHelper.generateChest(ModRegistry.LINKED_CHEST_BLOCK.value(),
                 Blocks.END_STONE,
                 LinkedChestBlockEntityRenderer.LINKED_CHEST_TEXTURE,
-                true,
+                false,
                 (Identifier identifier) -> {
                     return new LinkedChestSpecialRenderer.Unbaked(identifier,
                             LinkedChestBlockEntityRenderer.LINKED_CHEST_BUTTONS_TEXTURE);
                 },
                 blockModelGenerators);
-    }
-
-    public final void createChest(Block chestBlock, Block particleBlock, Identifier texture, boolean useGiftTexture, Function<Identifier, SpecialModelRenderer.Unbaked> unbakedRendererFactory, BlockModelGenerators blockModelGenerators) {
-        blockModelGenerators.createParticleOnlyBlock(chestBlock, particleBlock);
-        Item item = chestBlock.asItem();
-        Identifier identifier = ModelTemplates.CHEST_INVENTORY.create(item,
-                TextureMapping.particle(particleBlock),
-                blockModelGenerators.modelOutput);
-        ItemModel.Unbaked unbaked = ItemModelUtils.specialModel(identifier,
-                unbakedRendererFactory.apply(texture));
-        if (useGiftTexture) {
-            ItemModel.Unbaked unbaked2 = ItemModelUtils.specialModel(identifier,
-                    unbakedRendererFactory.apply(ChestSpecialRenderer.GIFT_CHEST_TEXTURE));
-            blockModelGenerators.itemModelOutput.accept(item, ItemModelUtils.isXmas(unbaked2, unbaked));
-        } else {
-            blockModelGenerators.itemModelOutput.accept(item, unbaked);
-        }
     }
 
     @Override
@@ -99,11 +79,11 @@ public class ModModelProvider extends AbstractModelProvider {
                 falseModel);
     }
 
-    public final ItemModel.Unbaked createLinkedPouch(Identifier itemModel, Identifier baseLocation, Identifier dyeSlotLocation, ItemModelGenerators itemModelGenerators) {
+    public final ItemModel.Unbaked createLinkedPouch(Identifier itemModel, Material baseLocation, Material dyeSlotLocation, ItemModelGenerators itemModelGenerators) {
         TextureMapping textureMapping = new TextureMapping().put(TextureSlot.LAYER0, baseLocation)
-                .put(TextureSlot.LAYER1, dyeSlotLocation.withSuffix("_left_dye_slot"))
-                .put(TextureSlot.LAYER2, dyeSlotLocation.withSuffix("_middle_dye_slot"))
-                .put(LAYER3_TEXTURE_SLOT, dyeSlotLocation.withSuffix("_right_dye_slot"));
+                .put(TextureSlot.LAYER1, new Material(dyeSlotLocation.sprite().withSuffix("_left_dye_slot")))
+                .put(TextureSlot.LAYER2, new Material(dyeSlotLocation.sprite().withSuffix("_middle_dye_slot")))
+                .put(LAYER3_TEXTURE_SLOT, new Material(dyeSlotLocation.sprite().withSuffix("_right_dye_slot")));
         return ItemModelUtils.tintedModel(FOUR_LAYERED_ITEM.create(itemModel,
                         textureMapping,
                         itemModelGenerators.modelOutput),

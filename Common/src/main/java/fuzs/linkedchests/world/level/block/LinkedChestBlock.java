@@ -5,8 +5,8 @@ import com.mojang.serialization.MapCodec;
 import fuzs.linkedchests.init.ModRegistry;
 import fuzs.linkedchests.world.level.block.entity.DyeChannel;
 import fuzs.linkedchests.world.level.block.entity.LinkedChestBlockEntity;
-import fuzs.puzzleslib.api.util.v1.InteractionResultHelper;
-import fuzs.puzzleslib.api.util.v1.ShapesHelper;
+import fuzs.puzzleslib.common.api.util.v1.InteractionResultHelper;
+import fuzs.puzzleslib.common.api.util.v1.ShapesHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -115,7 +115,7 @@ public class LinkedChestBlock extends EnderChestBlock implements HighlightShapeP
             Direction direction = blockState.getValue(FACING);
             Vec3 hitVector = hitResult.getLocation().subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ());
             if (itemInHand.is(ModRegistry.DYE_CHANNEL_COLOR_PROVIDERS_ITEM_TAG)) {
-                DyeColor dyeColor = DyeChannel.getDyeColor(itemInHand.getItem());
+                DyeColor dyeColor = DyeChannel.getDyeColor(itemInHand);
                 DyeChannel newDyeChannel = dyeChannel;
                 if (LEFT_BUTTON_SHAPES.get(direction).bounds().inflate(0.001).contains(hitVector)) {
                     newDyeChannel = dyeChannel.withLeftColor(dyeColor);

@@ -1,9 +1,10 @@
 {
+    "minecraft": "26.1.2",
     "mod": {
         "id": "linkedchests",
         "group": "fuzs.linkedchests",
         "name": "Linked Chests",
-        "version": "21.11.0",
+        "version": "26.1.0",
         "authors": [
             "Fuzs"
         ],
@@ -36,13 +37,13 @@
     ],
     "links": [
         {
-            "name": "github",
-            "slug": "linkedchests"
-        },
-        {
             "name": "curseforge",
             "slug": "linked-chests",
             "id": "1258307"
+        },
+        {
+            "name": "github",
+            "slug": "linked-chests"
         },
         {
             "name": "modrinth",

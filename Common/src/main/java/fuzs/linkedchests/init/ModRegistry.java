@@ -8,15 +8,14 @@ import fuzs.linkedchests.world.item.crafting.ShapedDyeChannelRecipe;
 import fuzs.linkedchests.world.level.block.LinkedChestBlock;
 import fuzs.linkedchests.world.level.block.entity.DyeChannel;
 import fuzs.linkedchests.world.level.block.entity.LinkedChestBlockEntity;
-import fuzs.puzzleslib.api.init.v3.registry.RegistryManager;
-import fuzs.puzzleslib.api.init.v3.tags.TagFactory;
+import fuzs.puzzleslib.common.api.init.v3.registry.RegistryManager;
+import fuzs.puzzleslib.common.api.init.v3.tags.TagFactory;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -49,11 +48,11 @@ public class ModRegistry {
     public static final Holder.Reference<RecipeSerializer<DyeChannelRecipe>> DYE_CHANNEL_RECIPE_SERIALIZER = REGISTRIES.register(
             Registries.RECIPE_SERIALIZER,
             "crafting_special_dye_channel",
-            () -> new CustomRecipe.Serializer<>(DyeChannelRecipe::new));
+            () -> DyeChannelRecipe.SERIALIZER);
     public static final Holder.Reference<RecipeSerializer<ShapedDyeChannelRecipe>> SHAPED_DYE_CHANNEL_RECIPE_SERIALIZER = REGISTRIES.register(
             Registries.RECIPE_SERIALIZER,
             "crafting_shaped_dye_channel",
-            ShapedDyeChannelRecipe.Serializer::new);
+            () -> ShapedDyeChannelRecipe.SERIALIZER);
 
     static final TagFactory TAGS = TagFactory.make(LinkedChests.MOD_ID);
     public static final TagKey<Item> DYE_CHANNEL_COLOR_PROVIDERS_ITEM_TAG = TAGS.registerItemTag(

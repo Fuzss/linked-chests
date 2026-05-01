@@ -3,9 +3,9 @@ package fuzs.linkedchests.world.level.block.entity;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import fuzs.linkedchests.LinkedChests;
-import fuzs.puzzleslib.api.event.v1.server.ServerLifecycleEvents;
-import fuzs.puzzleslib.api.event.v1.server.ServerTickEvents;
-import fuzs.puzzleslib.api.util.v1.CodecExtras;
+import fuzs.puzzleslib.common.api.event.v1.server.ServerLifecycleEvents;
+import fuzs.puzzleslib.common.api.event.v1.server.ServerTickEvents;
+import fuzs.puzzleslib.common.api.util.v1.CodecExtras;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -20,7 +20,7 @@ public final class DyeChannelManager extends SavedData {
                     .optionalFieldOf("dye_channels", Collections.emptyMap())
                     .forGetter(DyeChannelManager::getDyeChannels)).apply(instance, DyeChannelManager::new));
     public static final SavedDataType<DyeChannelManager> TYPE = new SavedDataType<>(LinkedChests.id(
-            "dye_channel_manager").toDebugFileName(), DyeChannelManager::new, CODEC, null);
+            "dye_channel_manager"), DyeChannelManager::new, CODEC, null);
     private static DyeChannelManager instance;
 
     private final Map<DyeChannel, DyeChannelStorage> dyeChannels;

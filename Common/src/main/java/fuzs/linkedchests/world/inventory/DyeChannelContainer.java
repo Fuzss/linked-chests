@@ -3,7 +3,7 @@ package fuzs.linkedchests.world.inventory;
 import fuzs.linkedchests.world.level.block.entity.DyeChannel;
 import fuzs.linkedchests.world.level.block.entity.DyeChannelManager;
 import fuzs.linkedchests.world.level.block.entity.DyeChannelStorage;
-import fuzs.puzzleslib.api.container.v1.ListBackedContainer;
+import fuzs.puzzleslib.common.api.container.v1.ListBackedContainer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ContainerUser;
