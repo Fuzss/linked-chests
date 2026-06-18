@@ -5,9 +5,9 @@ import fuzs.puzzleslib.common.api.data.v2.core.DataProviderContext;
 import fuzs.puzzleslib.common.api.data.v2.tags.AbstractTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.references.ItemIds;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 
 public class ModItemTagProvider extends AbstractTagProvider<Item> {
 
@@ -19,6 +19,6 @@ public class ModItemTagProvider extends AbstractTagProvider<Item> {
     public void addTags(HolderLookup.Provider registries) {
         this.tag(ItemTags.VANISHING_ENCHANTABLE).add(ModRegistry.LINKED_POUCH_ITEM);
         this.tag(ModRegistry.DYE_CHANNEL_COLOR_PROVIDERS_ITEM_TAG).addOptionalTag("c:dyes");
-        this.tag(ModRegistry.PERSONAL_CHANNEL_PROVIDERS_ITEM_TAG).add(Items.DIAMOND);
+        this.tag(ModRegistry.PERSONAL_CHANNEL_PROVIDERS_ITEM_TAG).add(ItemIds.DIAMOND);
     }
 }

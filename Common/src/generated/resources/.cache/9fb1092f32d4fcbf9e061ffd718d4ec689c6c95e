@@ -1,6 +1,6 @@
-// 26.1.2	2026-05-02T01:03:02.239082	Recipes
+// 26.2	2026-06-18T12:19:08.852452	Recipes
 a46badc71f585c9d15a6e27e2bb2f0ccfdfd75de data/linkedchests/advancement/recipes/decorations/linked_chest.json
 7b4f5720f83cd37167edbe6637b3adefc461dcbf data/linkedchests/advancement/recipes/decorations/linked_pouch.json
 f0080f1367f32d1a40cfc4e41598bbe449139a0a data/linkedchests/recipe/dye_channel.json
-33b4bd8de7c0ed1d22976287207642419cd3ddeb data/linkedchests/recipe/linked_chest.json
-1928df566b92ec102ee5f4f8404f6339ce6c5cbc data/linkedchests/recipe/linked_pouch.json
+a7360e4f11412096975c31264259e78d869a68ad data/linkedchests/recipe/linked_chest.json
+4a2e5fda7ac4c5fdf836429ad541a1867ec7e4bb data/linkedchests/recipe/linked_pouch.json

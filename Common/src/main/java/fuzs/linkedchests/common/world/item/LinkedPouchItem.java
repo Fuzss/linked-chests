@@ -7,7 +7,6 @@ import fuzs.linkedchests.common.world.level.block.LinkedChestBlock;
 import fuzs.linkedchests.common.world.level.block.entity.DyeChannel;
 import fuzs.linkedchests.common.world.level.block.entity.LinkedChestBlockEntity;
 import fuzs.puzzleslib.common.api.container.v1.ContainerMenuHelper;
-import fuzs.puzzleslib.common.api.util.v1.InteractionResultHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -35,7 +34,7 @@ public class LinkedPouchItem extends Item {
                         .set(ModRegistry.DYE_CHANNEL_DATA_COMPONENT_TYPE.value(), blockEntity.getDyeChannel());
             }
 
-            return InteractionResultHelper.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         } else {
             return super.useOn(context);
         }
@@ -55,7 +54,7 @@ public class LinkedPouchItem extends Item {
                     new LinkedMenu.LinkedData(dyeChannel.uuid().isPresent(), true));
         }
 
-        return InteractionResultHelper.sidedSuccess(itemInHand, level.isClientSide());
+        return InteractionResult.SUCCESS.heldItemTransformedTo(itemInHand);
     }
 
     public Component getDescriptionComponent() {

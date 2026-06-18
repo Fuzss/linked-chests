@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import fuzs.linkedchests.common.init.ModRegistry;
 import fuzs.linkedchests.common.world.level.block.entity.DyeChannel;
 import fuzs.linkedchests.common.world.level.block.entity.LinkedChestBlockEntity;
-import fuzs.puzzleslib.common.api.util.v1.InteractionResultHelper;
 import fuzs.puzzleslib.common.api.util.v1.ShapesHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -137,7 +136,7 @@ public class LinkedChestBlock extends EnderChestBlock implements HighlightShapeP
                         level.gameEvent(player, GameEvent.BLOCK_CHANGE, blockPos);
                     }
 
-                    return InteractionResultHelper.sidedSuccess(level.isClientSide());
+                    return InteractionResult.SUCCESS;
                 }
             } else if (LATCH_SHAPES.get(direction).bounds().inflate(0.001).contains(hitVector)) {
                 if (dyeChannel.uuid().isPresent()) {
@@ -158,7 +157,7 @@ public class LinkedChestBlock extends EnderChestBlock implements HighlightShapeP
                             level.gameEvent(player, GameEvent.BLOCK_CHANGE, blockPos);
                         }
 
-                        return InteractionResultHelper.sidedSuccess(level.isClientSide());
+                        return InteractionResult.SUCCESS;
                     }
                 } else if (itemInHand.is(ModRegistry.PERSONAL_CHANNEL_PROVIDERS_ITEM_TAG)) {
                     if (!level.isClientSide()) {
@@ -175,7 +174,7 @@ public class LinkedChestBlock extends EnderChestBlock implements HighlightShapeP
                         level.gameEvent(player, GameEvent.BLOCK_CHANGE, blockPos);
                     }
 
-                    return InteractionResultHelper.sidedSuccess(level.isClientSide());
+                    return InteractionResult.SUCCESS;
                 }
             }
 
@@ -186,7 +185,7 @@ public class LinkedChestBlock extends EnderChestBlock implements HighlightShapeP
             }
         }
 
-        return InteractionResultHelper.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     @Override

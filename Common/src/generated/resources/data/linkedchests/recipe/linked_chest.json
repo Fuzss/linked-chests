@@ -1,6 +1,5 @@
 {
   "type": "linkedchests:crafting_shaped_dye_channel",
-  "category": "misc",
   "key": {
     "#": "minecraft:end_stone",
     "@": "minecraft:ender_eye",

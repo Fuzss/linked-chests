@@ -1,31 +1,25 @@
 package fuzs.linkedchests.common.world.item.crafting;
 
+import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
 import fuzs.linkedchests.common.init.ModRegistry;
 import fuzs.linkedchests.common.world.level.block.entity.DyeChannel;
-import net.minecraft.data.loot.packs.LootData;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.level.ItemLike;
 
-import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class ShapedDyeChannelRecipe extends ShapedRecipe {
-    private static final Map<Item, DyeColor> DYE_BY_ITEM = LootData.WOOL_ITEM_BY_DYE.entrySet()
-            .stream()
-            .collect(Collectors.toMap((Map.Entry<DyeColor, ItemLike> entry) -> entry.getValue().asItem(),
-                    Map.Entry::getKey,
-                    (o1, o2) -> o2,
-                    IdentityHashMap::new));
+    private static final Map<Item, DyeColor> DYE_BY_ITEM = DyeColor.VALUES.stream()
+            .collect(ImmutableMap.toImmutableMap(Items.WOOL::pick, Function.identity()));
     public static final MapCodec<ShapedDyeChannelRecipe> MAP_CODEC = ShapedRecipe.MAP_CODEC.xmap(ShapedDyeChannelRecipe::new,
             Function.identity());
     public static final StreamCodec<RegistryFriendlyByteBuf, ShapedDyeChannelRecipe> STREAM_CODEC = ShapedRecipe.STREAM_CODEC.map(
@@ -41,7 +35,7 @@ public class ShapedDyeChannelRecipe extends ShapedRecipe {
     @Override
     public ItemStack assemble(CraftingInput craftingInput) {
         ItemStack itemStack = super.assemble(craftingInput);
-        // if there is a wool block somewhere in here copy the color from that for the dye channel data
+        // If there is a wool block somewhere in here, copy the color from that for the dye channel data.
         for (ItemStack input : craftingInput.items()) {
             DyeColor dyeColor = DYE_BY_ITEM.get(input.getItem());
             if (dyeColor != null) {
