@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "linkedchests:linked_pouch"
+        "recipes": "linkedchests:linked_pouch"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
