@@ -13,11 +13,9 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.ChestRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
@@ -76,18 +74,26 @@ public class LinkedChestBlockEntityRenderer extends SingleChestRenderer<LinkedCh
     }
 
     private void submitChestModel(LinkedChestRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, ChestModel chestModel, SpriteId material, int color) {
-        RenderType renderType = material.renderType(RenderTypes::entityCutout);
-        TextureAtlasSprite textureAtlasSprite = this.sprites.get(material);
         submitNodeCollector.submitModel(chestModel,
                 state.getOpenness(),
                 poseStack,
-                renderType,
                 state.lightCoords,
                 OverlayTexture.NO_OVERLAY,
                 color,
-                textureAtlasSprite,
-                0,
-                state.breakProgress);
+                material,
+                this.sprites,
+                0);
+        if (state.breakProgress != null) {
+            submitNodeCollector.order(1)
+                    .submitCrumblingOverlay(chestModel,
+                            state.getOpenness(),
+                            poseStack,
+                            material.renderType(RenderTypes::entityCutout),
+                            state.lightCoords,
+                            OverlayTexture.NO_OVERLAY,
+                            color,
+                            state.breakProgress);
+        }
     }
 
     @Override

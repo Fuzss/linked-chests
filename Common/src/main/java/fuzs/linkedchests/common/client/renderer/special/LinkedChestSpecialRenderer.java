@@ -12,7 +12,6 @@ import fuzs.linkedchests.common.world.level.block.entity.DyeChannel;
 import net.minecraft.client.model.object.chest.ChestModel;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.resources.model.sprite.SpriteGetter;
 import net.minecraft.client.resources.model.sprite.SpriteId;
@@ -76,13 +75,12 @@ public class LinkedChestSpecialRenderer implements SpecialModelRenderer<DyeChann
         submitNodeCollector.submitModel(chestModel,
                 this.openness,
                 poseStack,
-                material.renderType(RenderTypes::entitySolid),
                 packedLight,
                 packedOverlay,
                 color,
-                this.sprites.get(material),
-                outlineColor,
-                null);
+                material,
+                this.sprites,
+                outlineColor);
     }
 
     @Override

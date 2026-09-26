@@ -9,9 +9,10 @@ import fuzs.linkedchests.common.init.ModRegistry;
 import fuzs.linkedchests.common.world.level.block.entity.DyeChannel;
 import fuzs.linkedchests.common.world.level.block.entity.DyeChannelManager;
 import fuzs.puzzleslib.common.api.core.v1.ModConstructor;
-import fuzs.puzzleslib.neoforge.api.data.v2.core.DataProviderHelper;
+import fuzs.puzzleslib.neoforge.api.data.v3.core.DataProviderBuilder;
 import fuzs.puzzleslib.neoforge.api.init.v3.capability.NeoForgeCapabilityHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
@@ -27,10 +28,9 @@ public class LinkedChestsNeoForge {
                     DyeChannel.DEFAULT);
             return new ItemStacksResourceHandler(DyeChannelManager.getStorage(dyeChannel).items());
         }, ModRegistry.LINKED_POUCH_ITEM);
-        DataProviderHelper.registerDataProviders(LinkedChests.MOD_ID,
-                ModBlockLootProvider::new,
-                ModBlockTagProvider::new,
-                ModItemTagProvider::new,
-                ModRecipeProvider::new);
+        DataProviderBuilder.of(LinkedChests.MOD_ID)
+                .addLootProvider(ModBlockLootProvider::new, LootContextParamSets.BLOCK)
+                .addProvider(ModBlockTagProvider::new, ModItemTagProvider::new)
+                .addRecipeProvider(ModRecipeProvider::new);
     }
 }

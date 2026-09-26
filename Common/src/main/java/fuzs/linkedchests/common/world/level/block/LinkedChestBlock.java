@@ -1,7 +1,6 @@
 package fuzs.linkedchests.common.world.level.block;
 
 import com.google.common.collect.Maps;
-import com.mojang.serialization.MapCodec;
 import fuzs.linkedchests.common.init.ModRegistry;
 import fuzs.linkedchests.common.world.level.block.entity.DyeChannel;
 import fuzs.linkedchests.common.world.level.block.entity.LinkedChestBlockEntity;
@@ -13,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -40,7 +40,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class LinkedChestBlock extends EnderChestBlock implements HighlightShapeProvider {
-    public static final MapCodec<EnderChestBlock> CODEC = simpleCodec(LinkedChestBlock::new);
     static final VoxelShape SHAPE = Block.column(14.0, 0.0, 14.0);
     static final VoxelShape LEFT_BUTTON_SHAPE = Block.box(4.0, 14.0, 6.0, 6.0, 15.0, 10.0);
     static final Map<Direction, VoxelShape> LEFT_BUTTON_SHAPES = ShapesHelper.rotateHorizontally(LEFT_BUTTON_SHAPE);
@@ -62,11 +61,6 @@ public class LinkedChestBlock extends EnderChestBlock implements HighlightShapeP
 
     public LinkedChestBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    public MapCodec<EnderChestBlock> codec() {
-        return CODEC;
     }
 
     @Override
@@ -151,7 +145,7 @@ public class LinkedChestBlock extends EnderChestBlock implements HighlightShapeP
                                     1.0F);
                             ItemStack itemStack = blockEntity.removeLatchItem();
                             if (!player.getInventory().add(itemStack)) {
-                                player.drop(itemStack, false);
+                                player.drop(itemStack, false, Prediction.SERVER_ONLY);
                             }
 
                             level.gameEvent(player, GameEvent.BLOCK_CHANGE, blockPos);
